@@ -29,6 +29,12 @@ CREATE TABLE book_status (
   CONSTRAINT book_status_id_pk PRIMARY KEY (book_status_id)
 );
 
+CREATE TABLE language (
+  language_id number (3,0),
+  language_name varchar2 (255),
+  CONSTRAINT language_id_pk PRIMARY KEY (language_id)
+);
+
 CREATE TABLE collection (
   collection_id number (6,0),
   book_id number (6,0),
@@ -41,7 +47,9 @@ CREATE TABLE collection (
   CONSTRAINT collection_branch_id_fk FOREIGN KEY (branch_id)
       REFERENCES branch (branch_id),
   CONSTRAINT book_status_id FOREIGN KEY (book_status_id)
-      REFERENCES book_status (book_status_id)
+      REFERENCES book_status (book_status_id),
+  CONSTRAINT language_language_id_fk FOREIGN KEY (language_id)
+      REFERENCES language (language_id)
 );
 
 CREATE TABLE holds (
@@ -49,7 +57,6 @@ CREATE TABLE holds (
   patron_id number (6,0),
   card_number number (10,0),
   collection_id number (6,0),
-  book_id number (6,0),
   date_created date,
   hold_status varchar2 (255),
   CONSTRAINT hold_id_pk PRIMARY KEY (hold_id),
@@ -89,12 +96,6 @@ CREATE TABLE genre (
   CONSTRAINT genre_id_pk PRIMARY KEY (genre_id)
 );
 
-CREATE TABLE language (
-  language_id number (3,0),
-  language_name varchar2 (255),
-  CONSTRAINT language_id_pk PRIMARY KEY (language_id)
-);
-
 CREATE TABLE books (
   book_id number (6,0),
   isbn number (15,0),
@@ -108,12 +109,9 @@ CREATE TABLE books (
   CONSTRAINT book_id_pk PRIMARY KEY (book_id),
   CONSTRAINT genre_id_fk FOREIGN KEY (genre_id)
       REFERENCES genre (genre_id),
-  CONSTRAINT language_id FOREIGN KEY (language_id)
+  CONSTRAINT language_id_fk FOREIGN KEY (language_id)
       REFERENCES language (language_id)
 );
-
-ALTER TABLE holds
-DROP COLUMN book_id;
 
 --Sequences
 CREATE SEQUENCE book_id_seq 
@@ -160,6 +158,22 @@ INSERT INTO book_status VALUES (3, 'On hold');
 INSERT INTO book_status VALUES (4, 'In transit');
 INSERT INTO book_status VALUES (5, 'Lost');
 INSERT INTO book_status VALUES (6, 'Removed');
+
+-- Add data / LANGUAGE
+INSERT INTO language VALUES (1, 'English');
+INSERT INTO language VALUES (2, 'French');
+INSERT INTO language VALUES (3, 'Chinese');
+INSERT INTO language VALUES (4, 'Tamil');
+INSERT INTO language VALUES (5, 'Hindi');
+INSERT INTO language VALUES (6, 'Russian');
+INSERT INTO language VALUES (7, 'Polish');
+INSERT INTO language VALUES (8, 'German');
+INSERT INTO language VALUES (9, 'Korean');
+INSERT INTO language VALUES (10, 'Greek');
+INSERT INTO language VALUES (11, 'Tagalog');
+INSERT INTO language VALUES (12, 'Spanish');
+INSERT INTO language VALUES (13, 'Urdu');
+INSERT INTO language VALUES (14, 'Somali');
 
 -- Add data / COLLECTION
 INSERT INTO collection VALUES(1, 8, 9782092495001, 1, '03-Mar-23', 2, 3);
@@ -214,22 +228,6 @@ INSERT INTO genre VALUES (23, 'Science and the Environment');
 INSERT INTO genre VALUES (24, 'Social Issues');
 INSERT INTO genre VALUES (25, 'Sports and Games');
 INSERT INTO genre VALUES (26, 'Travel');
-
--- Add data / LANGUAGE
-INSERT INTO language VALUES (1, 'English');
-INSERT INTO language VALUES (2, 'French');
-INSERT INTO language VALUES (3, 'Chinese');
-INSERT INTO language VALUES (4, 'Tamil');
-INSERT INTO language VALUES (5, 'Hindi');
-INSERT INTO language VALUES (6, 'Russian');
-INSERT INTO language VALUES (7, 'Polish');
-INSERT INTO language VALUES (8, 'German');
-INSERT INTO language VALUES (9, 'Korean');
-INSERT INTO language VALUES (10, 'Greek');
-INSERT INTO language VALUES (11, 'Tagalog');
-INSERT INTO language VALUES (12, 'Spanish');
-INSERT INTO language VALUES (13, 'Urdu');
-INSERT INTO language VALUES (14, 'Somali');
 
 -- Add data / BOOKS
 INSERT INTO books VALUES (book_id_seq.nextval, 9780316229296, 'The fifth season', 'N.K.', 'Jemisin', 'Orbit Books', 2015, 1, 7);
