@@ -112,6 +112,9 @@ CREATE TABLE books (
       REFERENCES language (language_id)
 );
 
+ALTER TABLE holds
+DROP COLUMN book_id;
+
 --Sequences
 CREATE SEQUENCE book_id_seq 
     MINVALUE 1
