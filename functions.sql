@@ -49,12 +49,22 @@ AS
     CURSOR cur_due IS
         SELECT due_date
         FROM checkouts
-        WHERE checkout_id = param_checkout_id;
+        WHERE checkout_id = param_checkout_id
+            AND patron_id =  param_patron_id;
         
 BEGIN
     FOR rec_due_date IN cur_due LOOP
         lv_new_due_date := rec_due_date.due_date + 7;
     END LOOP;
     
-  RETURN lv_new_due_date;
+    IF lv_new_due_date IS NULL THEN
+        RAISE NO_DATA_FOUND;
+    END IF;
+    
+    RETURN lv_new_due_date;
+  
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Please enter valid values!');
+        return null;
 END RETURN_NEW_DUE_DATE_SF;
