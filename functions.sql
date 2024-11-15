@@ -1,3 +1,4 @@
+--FUNCTION TO CHECK IF USERNAME AND PASSWORDS MATCH
 CREATE OR REPLACE FUNCTION LOGIN_CHECK_SF(
     param_username IN patrons.username%TYPE,
     param_password IN patrons.password%TYPE) 
@@ -35,3 +36,25 @@ EXCEPTION
         RETURN success_message;
 END LOGIN_CHECK_SF;
 --CREATE functions
+
+--FUNCTION TO RETURN A NEW DUE DATE FOR A CHECKED-OUT BOOK
+create or replace FUNCTION RETURN_NEW_DUE_DATE_SF(
+    param_checkout_id IN checkouts.checkout_id%TYPE,
+    param_patron_id IN checkouts.patron_id%TYPE) 
+    RETURN DATE
+
+AS 
+    lv_new_due_date DATE;
+    
+    CURSOR cur_due IS
+        SELECT due_date
+        FROM checkouts
+        WHERE checkout_id = param_checkout_id;
+        
+BEGIN
+    FOR rec_due_date IN cur_due LOOP
+        lv_new_due_date := rec_due_date.due_date + 7;
+    END LOOP;
+    
+  RETURN lv_new_due_date;
+END RETURN_NEW_DUE_DATE_SF;
