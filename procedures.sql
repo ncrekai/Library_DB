@@ -1,4 +1,4 @@
---PROCEDURES
+--PROCEDURE TO DISPLAY A PATRON'S BORROWING HISTORY
 CREATE OR REPLACE PROCEDURE DISPLAY_BORROW_HISTORY(
     param_patron_id IN patrons.patron_id%TYPE,
     param_card_number IN patrons.card_number%TYPE)
