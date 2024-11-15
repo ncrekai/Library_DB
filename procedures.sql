@@ -35,4 +35,18 @@ BEGIN
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
     DBMS_OUTPUT.PUT_LINE('Borrower has not borrowed any books from the collection');
-END DISPLAY_BORROW_HISTORY;--CREATE procedures
+END DISPLAY_BORROW_HISTORY;
+
+--PROCEDURE TO UPDATE DUE_DATE ON THE CHECKOUTS TABLE
+create or replace PROCEDURE UPDATE_DUE_DATE_TABLE(
+    param_checkout_id IN checkouts.checkout_id%TYPE,
+    param_patron_id IN checkouts.patron_id%TYPE)
+AS 
+    lv_new_due_date DATE;
+BEGIN
+    lv_new_due_date := RETURN_NEW_DUE_DATE_SF(param_checkout_id, param_patron_id);
+UPDATE CHECKOUTS
+        SET due_date = lv_new_due_date
+        WHERE checkout_id = param_checkout_id
+            AND patron_id = param_patron_id;
+END UPDATE_DUE_DATE_TABLE; 
