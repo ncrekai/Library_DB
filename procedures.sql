@@ -43,13 +43,20 @@ create or replace PROCEDURE UPDATE_DUE_DATE_TABLE(
     param_patron_id IN checkouts.patron_id%TYPE)
 AS 
     lv_new_due_date DATE;
+    ex_due_date_update EXCEPTION;
 BEGIN
     lv_new_due_date := RETURN_NEW_DUE_DATE_SF(param_checkout_id, param_patron_id);
-UPDATE CHECKOUTS
+    UPDATE CHECKOUTS
         SET due_date = lv_new_due_date
         WHERE checkout_id = param_checkout_id
             AND patron_id = param_patron_id;
-END UPDATE_DUE_DATE_TABLE; 
+    IF SQL%NOTFOUND THEN
+        RAISE ex_due_date_update;
+    END IF;
+EXCEPTION
+    WHEN ex_due_date_update THEN
+    DBMS_OUTPUT.PUT_LINE('checkout ID or patron_id does not exist!');
+END UPDATE_DUE_DATE_TABLE;
 
 --PROCEDURE TO SEARCH FOR BOOKS ACCORDING TO USER INPUT
 CREATE OR REPLACE PROCEDURE BOOK_SEARCH_SP(
