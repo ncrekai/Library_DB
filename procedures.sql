@@ -52,16 +52,13 @@ UPDATE CHECKOUTS
 END UPDATE_DUE_DATE_TABLE; 
 
 --PROCEDURE TO SEARCH FOR BOOKS ACCORDING TO USER INPUT
-CREATE OR REPLACE PROCEDURE SEARCH_FOR_BOOKS_SP(unspecific_param IN VARCHAR2)
+CREATE OR REPLACE PROCEDURE BOOK_SEARCH_SP(
+    search_filter IN VARCHAR2,
+    unspecific_param IN VARCHAR2)
 AS 
-   CURSOR cv_search(unspecific_param IN VARCHAR2) IS 
-        SELECT title, author_fname,author_lname,genre_name
-        FROM books JOIN genre USING (genre_id)
-        WHERE UPPER(title) = UPPER(unspecific_param)
-            OR UPPER(author_fname) = UPPER(unspecific_param)
-            OR UPPER(author_lname) = UPPER(unspecific_param)
-            OR UPPER(genre_name) = UPPER(unspecific_param)
-            OR UPPER (author_fname || ' ' || author_lname ) = UPPER(unspecific_param);
+    cv_search SYS_REFCURSOR;
+    lv_input1 VARCHAR2(255) := UPPER(search_filter);
+   
    TYPE type_rec IS RECORD(
         title books.title%TYPE,
         author_fname books.author_fname%TYPE,
@@ -69,16 +66,42 @@ AS
         genre_name genre.genre_name%TYPE);
     rec_search type_rec;
 BEGIN
-    OPEN cv_search(unspecific_param);
-    LOOP
-    FETCH cv_search INTO rec_search;
-        EXIT WHEN cv_search%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE(rec_search.author_fname ||' ' || rec_search.author_lname || ' - ' || rec_search.title);
-    END LOOP;
+    IF lv_input1 = 'TITLE' THEN
+        OPEN cv_search FOR SELECT title, author_fname,author_lname,genre_name
+                        FROM books JOIN genre USING (genre_id)
+                        WHERE UPPER(title) = UPPER(unspecific_param);
+        LOOP
+        FETCH cv_search INTO rec_search;
+            EXIT WHEN cv_search%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE(rec_search.author_fname ||' ' || rec_search.author_lname || ' - ' || rec_search.title);
+        END LOOP;
+    ELSIF lv_input1 = 'AUTHOR' THEN
+        OPEN cv_search FOR SELECT title, author_fname,author_lname,genre_name
+                        FROM books JOIN genre USING (genre_id)
+                        WHERE UPPER(author_fname) = UPPER(unspecific_param)
+                            OR UPPER(author_lname) = UPPER(unspecific_param)
+                            OR UPPER (author_fname || ' ' || author_lname ) = UPPER(unspecific_param);
+        LOOP
+        FETCH cv_search INTO rec_search;
+            EXIT WHEN cv_search%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE(rec_search.author_fname ||' ' || rec_search.author_lname || ' - ' || rec_search.title);
+        END LOOP;
+    ELSIF lv_input1 = 'GENRE' THEN
+        OPEN cv_search FOR SELECT title, author_fname,author_lname,genre_name
+                        FROM books JOIN genre USING (genre_id)
+                        WHERE UPPER(genre_name) = UPPER(unspecific_param);
+        LOOP
+        FETCH cv_search INTO rec_search;
+            EXIT WHEN cv_search%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE(rec_search.author_fname ||' ' || rec_search.author_lname || ' - ' || rec_search.title);
+        END LOOP;
+    END IF;
+        
     IF rec_search.title IS NULL THEN
         RAISE NO_DATA_FOUND;
     END IF;
+    
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         DBMS_OUTPUT.PUT_LINE('No results found!');
-END SEARCH_FOR_BOOKS_SP;
+END BOOK_SEARCH_SP;
