@@ -68,3 +68,30 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Please enter valid values!');
         return null;
 END RETURN_NEW_DUE_DATE_SF;
+
+--FUNCTION TO CHECK FOR BOOK AVAILABILITY
+CREATE OR REPLACE FUNCTION CHECK_BOOK_AVAILABILITY(
+    param_collection_id IN collection.collection_id%TYPE,
+    param_book_id IN collection.book_id%TYPE) 
+    RETURN VARCHAR2 
+AS 
+    book_availability VARCHAR2(255);
+    CURSOR cur_availability(param_collection_id collection.collection_id%TYPE, param_book_id collection.book_id%TYPE) IS
+        SELECT collection_id, book_id, title, book_status_description
+        FROM books JOIN collection USING (book_id) JOIN book_status USING (book_status_id)
+        WHERE collection_id = param_collection_id
+            AND book_id = param_book_id;
+BEGIN
+    FOR rec_availability IN cur_availability(param_collection_id, param_book_id) LOOP
+        book_availability := rec_availability.book_status_description;
+        DBMS_OUTPUT.PUT_LINE(rec_availability.title || ': ' || book_availability);
+        END LOOP;
+        IF book_availability IS NULL THEN
+            RAISE NO_DATA_FOUND;
+        END IF;
+  RETURN book_availability;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Availability status not available for entered values!');
+        return null;
+END CHECK_BOOK_AVAILABILITY;
