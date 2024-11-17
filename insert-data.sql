@@ -69,6 +69,15 @@ CREATE TABLE BOOK_STATUS (
     id NUMBER(2,0),
     CONSTRAINT PK_BOOK_STATUS PRIMARY KEY (id)
 );
+CREATE TABLE HOLDS (
+    id NUMBER(6,0),
+    patron_id NUMBER(6,0),
+    collection_id NUMBER(6,0),
+    date_created DATE,
+    card_number NUMBER(10,0),
+    status VARCHAR2(255),
+    CONSTRAINT PK_HOLDS PRIMARY KEY (id)
+);
 
 -- Add data / BOOKS
 
@@ -267,3 +276,14 @@ INSERT INTO language VALUES (13, 'Urdu');
 INSERT INTO language VALUES (14, 'Somali');
 
 -- Add data / HOLDS
+
+INSERT INTO holds VALUES (1, 1, 24, '21-Sep-24', 121053, 9, 'waiting');
+INSERT INTO holds VALUES (2, 2, 6, '22-Dec-15', 121323, 3, 'waiting');
+INSERT INTO holds VALUES (3, 7, 7, '24-Nov-01', 121673, 1, 'ready');
+INSERT INTO holds VALUES (4, 2, 15, '24-Nov-02', 121323, 3, 'ready');
+INSERT INTO holds VALUES (5, 5, 5, '24-Nov-03', 121591, 1, 'waiting');
+INSERT INTO holds VALUES (6, 8, 17, '24-Nov-04', 121699, 6, 'ready');
+INSERT INTO holds VALUES (7, 8, 18, '24-Nov-05', 121699, 8, 'ready');
+INSERT INTO holds VALUES (8, 9, 22, '24-Nov-06', 121725, 8, 'waiting');
+INSERT INTO holds VALUES (9, 6, 3, '24-Nov-07', 121647, 5, 'waiting');
+INSERT INTO holds VALUES (10, 4, 8, '24-Nov-08', 121409, 2, 'waiting');
