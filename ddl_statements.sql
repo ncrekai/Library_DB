@@ -297,6 +297,27 @@ INSERT INTO holds VALUES (8, 9, 121725, 22, '24-Nov-06', 'waiting');
 INSERT INTO holds VALUES (9, 6, 121647, 3, '24-Nov-07', 'waiting');
 INSERT INTO holds VALUES (10, 4, 121409, 8, '24-Nov-08', 'waiting');
 
+--Add data / CHECKOUTS_COLLECTION
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (1,3);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (2,5);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (3,8);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (4,11);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (5, 13);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (6, 9);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (7, 10);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (8, 24);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (9, 14);
+INSERT INTO checkouts_collection ( checkout_id, collection_id)
+    VALUES (10, 19);
 
 -- UPDATE COLLECTION -> ID with sequence
 BEGIN
@@ -327,6 +348,8 @@ CREATE UNIQUE INDEX phone_idx
     ON patrons(patron_phone);
 
 --PACKAGE CONTAINING 3 PROCEDURES AND 3 FUNCTIONS
+
+--PACKAGE SPECIFICATION
 CREATE OR REPLACE PACKAGE LIBRARY_PKG 
     AS 
     PROCEDURE DISPLAY_BORROW_HISTORY(
@@ -554,7 +577,7 @@ AS
 
 END LIBRARY_PKG;
 
---CREATE TRIGGERS
+--TRIGGERS
 
 -- TRIGGER when Book is CHECKED OUT Part 1 -> Add checkout and due date
 create or replace TRIGGER CHECKOUT_1_TRG 
